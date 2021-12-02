@@ -1,0 +1,25 @@
+---
+name: 'PR Checks'
+on:
+  - pull_request
+permissions:
+  pull-requests: read
+jobs:
+  golangci:
+    name: Golang CI Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16' # Should match our go.mod!
+      - run: go version
