@@ -19,6 +19,6 @@ func TestDispatchHello(t *testing.T) {
 
 	router.DispatchHello(rec, req.WithContext(context.TODO()))
 
-	expected, _ := json.Marshal(&map[string]string{"message": "Hello !"})
+	expected, _ := json.Marshal(&map[string]string{"message": "Hello!"})
 	assert.Equal(t, rec.Body.String(), string(expected))
 }
