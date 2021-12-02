@@ -28,9 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: buildpacks/github-actions/setup-pack@v4.4.0
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.16' # Should match our go.mod!
       - run: go build ./...
+      - run: pack buildpack package example-backend:latest
     needs:
       - test
