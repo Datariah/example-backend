@@ -33,6 +33,7 @@ jobs:
         with:
           go-version: '^1.16' # Should match our go.mod!
       - run: go build ./...
-      - run: pack buildpack package example-backend:latest
+      - run: pack config default-builder paketobuildpacks/builder:base
+      - run: pack build example-backend:latest
     needs:
       - test

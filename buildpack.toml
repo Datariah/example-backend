@@ -1,6 +1,0 @@
-[buildpack]
-id = "datariah.example-backend"
-name = "example-backend"
-version = "1.0.0"
-homepage = "https://github.com/datariah/example-backend"
-keywords = [ "example-backend" ]
