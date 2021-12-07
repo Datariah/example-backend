@@ -21,7 +21,7 @@ func TestDispatchHello(t *testing.T) {
 	router.DispatchHello(rec, req.WithContext(context.TODO()))
 
 	expected := map[string]string{
-		"message": "Hello!",
+		"message": "Hello World!",
 	}
 
 	response := map[string]string{}
