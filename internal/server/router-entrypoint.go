@@ -1,6 +1,9 @@
 package server
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/Datariah/example-backend/internal/router"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -9,6 +12,12 @@ import (
 
 // Serve is responsible for defining the routing and starting the negroni server.
 func Serve() {
+	port, exists := os.LookupEnv("PORT")
+
+	if !exists {
+		port = "8000"
+	}
+
 	muxRouter := mux.NewRouter()
 	apiV1 := muxRouter.PathPrefix("/api/v1").Subrouter()
 
@@ -16,6 +25,7 @@ func Serve() {
 
 	n := negroni.Classic()
 	handler := cors.Default().Handler(muxRouter)
+
 	n.UseHandler(handler)
-	n.Run(":80")
+	n.Run(fmt.Sprintf(":%s", port))
 }
