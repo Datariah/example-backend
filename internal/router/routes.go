@@ -12,11 +12,11 @@ import (
 
 // DispatchHello triggers a 200 response saying Hello!
 func DispatchHello(writer http.ResponseWriter, req *http.Request) {
-	r := render.New()
+	renderer := render.New()
 
 	timeBytes, err := json.Marshal(time.Now())
 	if err != nil {
-		err = r.JSON(writer, http.StatusInternalServerError, map[string]string{
+		err = renderer.JSON(writer, http.StatusInternalServerError, map[string]string{
 			"message":   fmt.Sprintf("Error: %v", err),
 			"timestamp": "EMPTY",
 		})
@@ -25,7 +25,7 @@ func DispatchHello(writer http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	err = r.JSON(writer, http.StatusOK, map[string]string{
+	err = renderer.JSON(writer, http.StatusOK, map[string]string{
 		"message":   "Hello World!",
 		"timestamp": string(timeBytes),
 	})
