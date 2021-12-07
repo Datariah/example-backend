@@ -3,6 +3,7 @@ package server_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -19,6 +20,16 @@ func TestDispatchHello(t *testing.T) {
 
 	router.DispatchHello(rec, req.WithContext(context.TODO()))
 
-	expected, _ := json.Marshal(&map[string]string{"message": "Hello!"})
-	assert.Equal(t, rec.Body.String(), string(expected))
+	expected := map[string]string{
+		"message": "Hello!",
+	}
+
+	response := map[string]string{}
+
+	err := json.Unmarshal(rec.Body.Bytes(), &response)
+	if err != nil {
+		assert.Fail(t, fmt.Sprintf("Error while running test: %v", err))
+	}
+
+	assert.Equal(t, response["message"], expected["message"])
 }
