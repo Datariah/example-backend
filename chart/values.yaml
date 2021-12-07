@@ -1,0 +1,19 @@
+application:
+  port:
+    number: 8000
+
+server:
+  deployment:
+    replicaCount: 1
+
+nameOverride:
+
+fullnameOverride:
+
+service:
+  port:
+    number: 80
+
+serviceAccount:
+  name:
+  create: true

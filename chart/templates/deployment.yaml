@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+
+  labels:
+    {{- include "example-backend.labels" . | nindent 4 }}
+    version: {{ toString $.Chart.Version | quote }}
+    app: {{ $.Chart.Name }}
+  annotations:
+    {{- include "example-backend.labels" . | nindent 4 }}
+    version: {{ toString $.Chart.Version | quote }}
+    app: {{ $.Chart.Name }}
+spec:
+  replicas: {{ $.Values.server.deployment.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{- include "example-backend.selectorLabels" . | nindent 6 }}
+      version: {{ toString $.Chart.Version | quote }}
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "example-backend.selectorLabels" . | nindent 8 }}
+        version: {{ toString $.Chart.Version | quote }}
+        app: {{ .Chart.Name }}
+    spec:
+      serviceAccountName: "{{- include "example-backend.serviceAccountName" . -}}"
+      containers:
+        - image: kmai/example-backend:latest
+          imagePullPolicy: Always
+          name: backend
+          env:
+            - name: PORT
+              value: {{ .Values.application.port.number | quote }}
+          ports:
+            - containerPort: {{ .Values.application.port.number }}
