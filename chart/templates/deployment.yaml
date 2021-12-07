@@ -30,7 +30,7 @@ spec:
     spec:
       serviceAccountName: "{{- include "example-backend.serviceAccountName" . -}}"
       containers:
-        - image: kmai/example-backend:latest
+        - image: "kmai/example-backend:{{ .Values.application.image.version }}"
           imagePullPolicy: Always
           name: backend
           env:

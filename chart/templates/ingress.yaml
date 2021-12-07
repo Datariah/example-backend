@@ -17,3 +17,14 @@ spec:
       name: example-backend
       port:
         number: {{ .Values.service.port.number }}
+  rules:
+    - host: api.poc.datariah.com
+      http:
+        paths:
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: example-backend
+                port:
+                  number: {{ .Values.service.port.number }}

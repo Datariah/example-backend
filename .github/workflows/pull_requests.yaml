@@ -41,9 +41,41 @@ jobs:
         run: go build ./...
       - name: Set pack default builder to Paketo
         run: pack config default-builder paketobuildpacks/builder:base
-      - name: Build kmai/example-backend docker image with tag "latest"
-        run: pack build kmai/example-backend:latest
+      - name: Build kmai/example-backend docker image with tag "${{ github.sha }}"
+        run: pack build kmai/example-backend:${{ github.sha }}
       - name: Push docker image to Docker Hub
-        run: docker push kmai/example-backend:latest
+        run: docker push kmai/example-backend:${{ github.sha }}
     needs:
       - test
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Install AWS IAM Authenticator
+        uses: prepor/action-aws-iam-authenticator@cf5158722387bf0c4aeb61abedaa1f0bc9204b6c # v1 @ 2020-11-18
+      - uses: azure/setup-helm@18bc76811624f360dbd7f18c2d4ecb32c7b87bab # v1.1 @ 2021-03-31
+        with:
+          version: '3.5.2'
+        id: install
+      - name: Create kubeconfig context
+        run: aws eks --region us-east-1 update-kubeconfig --name office-hours --alias office-hours
+      - name: Release changes via Helm Chart
+        run: |
+          base64 -d <<< "$KUBECONFIG_DATA" > .kubeconfig
+          chmod og-rwx .kubeconfig
+          KUBECONFIG=.kubeconfig helm upgrade \
+            example-backend chart/ \
+            --install --wait \
+            --set application.image.version=${{ github.sha }} \
+            --namespace default
+        env:
+          KUBECONFIG_DATA: '${{ secrets.KUBECONFIG_DATA }}'
+    needs:
+      - build
+

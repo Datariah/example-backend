@@ -1,4 +1,6 @@
 application:
+  image:
+    version: latest
   port:
     number: 8000
 
