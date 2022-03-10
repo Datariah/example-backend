@@ -1,0 +1,25 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: acme-issuer
+spec:
+  acme:
+    # You should put a real e-mail here. In this case, I'm not because this will be removed
+    email: bounce@datariah.com
+    preferredChain: ""
+    privateKeySecretRef:
+      name: acme-issuer-key
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+      - dns01:
+          cnameStrategy: Follow
+          route53:
+            hostedZoneID: Z08863652018ECUTCRR7H
+            region: us-east-1
+            secretAccessKeySecretRef:
+              name: ""
+        selector:
+          dnsZones:
+            - '*.poc.datariah.com'
+            - poc.datariah.com

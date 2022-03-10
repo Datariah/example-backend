@@ -1,0 +1,30 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-backend
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "acme-issuer"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.poc.datariah.com
+      secretName: {{ .Chart.Name }}-tls
+  defaultBackend:
+    service:
+      name: example-backend
+      port:
+        number: {{ .Values.service.port.number }}
+  rules:
+    - host: api.poc.datariah.com
+      http:
+        paths:
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: example-backend
+                port:
+                  number: {{ .Values.service.port.number }}

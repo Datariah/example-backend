@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "example-backend.fullname" . }}
+  labels:
+  {{- include "example-backend.labels" . | nindent 4 }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.service.port.number }}
+      targetPort: {{ .Values.application.port.number }}
+  selector:
+  {{- include "example-backend.selectorLabels" . | nindent 4 }}
+
+
+####
+## Ingress (HTTP: 80 / HTTPS: 443) -> Service (8000) -> Pod (80)
+###
